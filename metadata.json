@@ -1,0 +1,7 @@
+{
+  "name": "IDForge - Professional ID Card Generator",
+  "description": "Create professional identity cards and print-ready A4 sheets. Ideal for organizations, political parties, and events.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
