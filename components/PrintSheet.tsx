@@ -107,22 +107,27 @@ const PrintSheet: React.FC<PrintSheetProps> = ({ data }) => {
                             </div>
                         </div>
 
-                        {/* Signature Area */}
-                        <div className="text-center mt-2">
-                             {/* Transparent placeholder for signature area */}
-                            <div className="h-12 flex items-end justify-center mb-1">
-                                 {!data.printTemplate && (
-                                     <span className="font-cursive text-xl text-blue-900 italic" style={{ fontFamily: 'cursive' }}>
-                                        (கையெழுத்து)
-                                     </span>
-                                 )}
-                            </div>
-                            <p 
-                                className="text-sm font-bold border-t border-gray-800 pt-1 px-2"
-                                style={{ color: data.themeColor }}
-                            >
-                                பொதுச் செயலாளர்
-                            </p>
+                        {/* Signature/Seal Area - Replaced 'General Secretary' text */}
+                        <div className="text-center mt-2 relative">
+                             {/* Seal Image */}
+                             {data.signatureImage ? (
+                                 <img 
+                                    src={data.signatureImage} 
+                                    className="h-28 object-contain" 
+                                    alt="Authorized Seal" 
+                                 />
+                             ) : (
+                                 // Fallback if user clears the seal
+                                 <div className="flex flex-col items-center">
+                                    <div className="h-12 w-full"></div>
+                                    <p 
+                                        className="text-sm font-bold border-t border-gray-800 pt-1 px-2"
+                                        style={{ color: data.themeColor }}
+                                    >
+                                        பொதுச் செயலாளர்
+                                    </p>
+                                 </div>
+                             )}
                         </div>
                     </div>
                 </div>

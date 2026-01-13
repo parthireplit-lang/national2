@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { IdCardData } from '../types';
 import { generateRandomProfile } from '../services/geminiService';
-import { Wand2, Upload, Trash2, Printer, FileText, Image as ImageIcon, ScanLine, AlertCircle, CheckSquare, Square } from 'lucide-react';
+import { Wand2, Upload, Trash2, Printer, FileText, Image as ImageIcon, ScanLine, AlertCircle, CheckSquare, Square, Stamp } from 'lucide-react';
 
 interface EditorProps {
   data: IdCardData;
@@ -16,7 +16,7 @@ const Editor: React.FC<EditorProps> = ({ data, onChange, onPrint }) => {
     onChange({ ...data, [field]: value });
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, field: 'profileImage' | 'templateImage') => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, field: 'profileImage' | 'templateImage' | 'signatureImage') => {
     const file = e.target.files?.[0];
     if (file) {
       const url = URL.createObjectURL(file);
@@ -256,6 +256,38 @@ const Editor: React.FC<EditorProps> = ({ data, onChange, onPrint }) => {
                         {data.profileImage && (
                             <button 
                                 onClick={() => onChange({...data, profileImage: null})}
+                                className="text-xs text-red-600 hover:text-red-700 flex items-center gap-1"
+                            >
+                                <Trash2 size={12} /> Remove
+                            </button>
+                        )}
+                    </div>
+                </div>
+             </div>
+
+             {/* Signature/Seal Image */}
+             <div className="pt-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Signature / Seal</label>
+                <div className="flex items-center gap-4">
+                    <div className="h-16 w-32 rounded bg-gray-50 overflow-hidden flex-shrink-0 border border-gray-200 flex items-center justify-center">
+                        {data.signatureImage ? (
+                            <img src={data.signatureImage} alt="Seal" className="h-full w-full object-contain" />
+                        ) : (
+                            <div className="text-gray-400 flex flex-col items-center">
+                                <Stamp size={20} />
+                                <span className="text-[10px] mt-1">No Seal</span>
+                            </div>
+                        )}
+                    </div>
+                    <div className="flex-1">
+                        <label className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 cursor-pointer w-fit mb-2">
+                            <Upload size={14} />
+                            Upload Seal
+                            <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, 'signatureImage')} />
+                        </label>
+                        {data.signatureImage && (
+                            <button 
+                                onClick={() => onChange({...data, signatureImage: null})}
                                 className="text-xs text-red-600 hover:text-red-700 flex items-center gap-1"
                             >
                                 <Trash2 size={12} /> Remove

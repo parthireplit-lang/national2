@@ -17,6 +17,7 @@ export interface IdCardData {
   profileImage: string | null; // {{PHOTO}}
   templateImage: string | null; // Full page background (Header+Footer+Watermark)
   printTemplate: boolean; // Controls if the background image prints
+  signatureImage: string | null; // {{SEAL/SIGNATURE}}
   orgLogo: string | null;
   themeColor: string;
   accentColor: string;
