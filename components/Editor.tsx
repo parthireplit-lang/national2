@@ -60,21 +60,12 @@ const Editor: React.FC<EditorProps> = ({ data, onChange, onPrint }) => {
         return;
     }
 
-    // Optimized options for single-page A4 export
     const opt = {
-        margin:       [0, 0, 0, 0], // Force zero margins
-        filename:     `Appointment_${(data.firstName || 'Order').replace(/[^a-z0-9]/gi, '_')}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { 
-            scale: 2, // Higher scale for clear text
-            useCORS: true, 
-            scrollY: 0,
-            scrollX: 0,
-            windowWidth: 794, // Exact A4 width in px at 96 DPI
-            windowHeight: 1123, // Exact A4 height in px at 96 DPI
-            letterRendering: true,
-        },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        margin: 0,
+        filename: `Appointment_${data.firstName || 'Order'}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
     try {
