@@ -31,11 +31,47 @@ const Editor: React.FC<EditorProps> = ({ data, onChange, onPrint }) => {
     onChange({ ...data, [field]: value });
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, field: 'profileImage' | 'templateImage' | 'signatureImage') => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, field: 'profileImage' | 'templateImage' | 'signatureImage' | 'secondarySignatureImage') => {
     const file = e.target.files?.[0];
     if (file) {
-      const url = URL.createObjectURL(file);
-      onChange({ ...data, [field]: url });
+      // Compress and Resize Image before saving to ensure it fits in localStorage
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          // Max dimensions (e.g. 1600px for A4 width/height to save space while keeping print quality decent)
+          // 1600px height is ~150dpi for A4 (good enough for text legibility)
+          const MAX_DIMENSION = 1600; 
+          
+          if (width > height) {
+            if (width > MAX_DIMENSION) {
+              height *= MAX_DIMENSION / width;
+              width = MAX_DIMENSION;
+            }
+          } else {
+            if (height > MAX_DIMENSION) {
+              width *= MAX_DIMENSION / height;
+              height = MAX_DIMENSION;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            // Convert to JPEG with 0.8 quality to reduce size significantly compared to PNG/Raw
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            onChange({ ...data, [field]: dataUrl });
+          }
+        };
+        img.src = event.target?.result as string;
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -76,7 +112,7 @@ const Editor: React.FC<EditorProps> = ({ data, onChange, onPrint }) => {
           refreshRecords();
       } catch (error) {
           console.error(error);
-          alert("Failed to save record.");
+          alert("Failed to save record. Storage might be full.");
       } finally {
           setSaving(false);
       }
@@ -85,11 +121,6 @@ const Editor: React.FC<EditorProps> = ({ data, onChange, onPrint }) => {
   const handleNewRecord = () => {
     if (confirm("Clear current form and start new?")) {
         setCurrentId(null);
-        // We trigger a reset by calling onChange with blank/default data if needed, 
-        // but for now we assume the user might want to keep template settings.
-        // Let's just clear specific fields or just reset ID so next save is a new entry.
-        // A full reset would require DEFAULT_CARD_DATA, but we don't have it imported here easily without adding imports.
-        // Let's just reset the ID, which is the "Create New" behavior for the *next* save.
         alert("Ready to create a new record. Edit the fields and click Save.");
     }
   };
@@ -453,9 +484,9 @@ const Editor: React.FC<EditorProps> = ({ data, onChange, onPrint }) => {
                 </div>
              </div>
 
-             {/* Signature/Seal Image */}
+             {/* Right Signature/Seal Image */}
              <div className="pt-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Signature / Seal</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Right Signature (Main)</label>
                 <div className="flex items-center gap-4">
                     <div className="h-16 w-32 rounded bg-gray-50 overflow-hidden flex-shrink-0 border border-gray-200 flex items-center justify-center">
                         {data.signatureImage ? (
@@ -476,6 +507,38 @@ const Editor: React.FC<EditorProps> = ({ data, onChange, onPrint }) => {
                         {data.signatureImage && (
                             <button 
                                 onClick={() => onChange({...data, signatureImage: null})}
+                                className="text-xs text-red-600 hover:text-red-700 flex items-center gap-1"
+                            >
+                                <Trash2 size={12} /> Remove
+                            </button>
+                        )}
+                    </div>
+                </div>
+             </div>
+
+             {/* Left Signature/Seal Image */}
+             <div className="pt-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Left Signature (Optional)</label>
+                <div className="flex items-center gap-4">
+                    <div className="h-16 w-32 rounded bg-gray-50 overflow-hidden flex-shrink-0 border border-gray-200 flex items-center justify-center">
+                        {data.secondarySignatureImage ? (
+                            <img src={data.secondarySignatureImage} alt="Left Seal" className="h-full w-full object-contain" />
+                        ) : (
+                            <div className="text-gray-400 flex flex-col items-center">
+                                <Stamp size={20} />
+                                <span className="text-[10px] mt-1">No Seal</span>
+                            </div>
+                        )}
+                    </div>
+                    <div className="flex-1">
+                        <label className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 cursor-pointer w-fit mb-2">
+                            <Upload size={14} />
+                            Upload Left Seal
+                            <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, 'secondarySignatureImage')} />
+                        </label>
+                        {data.secondarySignatureImage && (
+                            <button 
+                                onClick={() => onChange({...data, secondarySignatureImage: null})}
                                 className="text-xs text-red-600 hover:text-red-700 flex items-center gap-1"
                             >
                                 <Trash2 size={12} /> Remove

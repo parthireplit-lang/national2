@@ -63,10 +63,10 @@ const PrintSheet: React.FC<PrintSheetProps> = ({ data }) => {
                     </div>
                 )}
 
-                {/* Main Text */}
+                {/* Main Text - Removed "பொறுப்பில்" */}
                 <div className="mb-6 relative z-10">
                     <p className="text-lg text-justify leading-8 font-medium indent-12">
-                        {data.orgName}யின் <span className="font-bold">{data.district}</span> மாவட்டம், <span className="font-bold">{data.role}</span> , <span className="font-bold">{data.firstName}</span> அவர்களை <span className="font-bold">{new Date(data.issueDate).toLocaleDateString('en-GB')}</span> முதல் நியமனம் செய்யப்படுகிறது.
+                        {data.orgName}யின் <span className="font-bold">{data.district}</span> மாவட்டம், <span className="font-bold">{data.role}</span>, <span className="font-bold">{data.firstName}</span> அவர்களை <span className="font-bold">{new Date(data.issueDate).toLocaleDateString('en-GB')}</span> முதல் நியமனம் செய்யப்படுகிறது.
                     </p>
                     <p className="text-lg text-justify leading-8 font-medium indent-12 mt-4">
                         தங்களது பணி சிறக்க மனதார வாழ்த்துகின்றேன்.
@@ -75,6 +75,7 @@ const PrintSheet: React.FC<PrintSheetProps> = ({ data }) => {
 
                 {/* Bottom Section: Recipient & Photo/Sig */}
                 <div className="mt-auto">
+                    {/* Row 1: Recipient and Photo */}
                     <div className="flex justify-between items-start relative z-10 mb-4">
                         
                         {/* Recipient Block (Left) */}
@@ -93,9 +94,8 @@ const PrintSheet: React.FC<PrintSheetProps> = ({ data }) => {
                             </div>
                         </div>
 
-                        {/* Right Side: Photo & Signature Placeholder */}
-                        <div className="flex flex-col items-center gap-2">
-                            {/* Photo */}
+                        {/* Photo (Right) */}
+                        <div className="flex flex-col items-center">
                             <div className="p-1 bg-white border border-gray-300 shadow-sm -rotate-1">
                                 <div className="w-28 h-36 bg-gray-100 overflow-hidden relative">
                                     {data.profileImage ? (
@@ -107,30 +107,47 @@ const PrintSheet: React.FC<PrintSheetProps> = ({ data }) => {
                                     )}
                                 </div>
                             </div>
-
-                            {/* Signature/Seal Area - Replaced 'General Secretary' text */}
-                            <div className="text-center mt-1 relative">
-                                {/* Seal Image */}
-                                {data.signatureImage ? (
-                                    <img 
-                                        src={data.signatureImage} 
-                                        className="w-48 h-auto object-contain" 
-                                        alt="Authorized Seal" 
-                                    />
-                                ) : (
-                                    // Fallback if user clears the seal
-                                    <div className="flex flex-col items-center">
-                                        <div className="h-10 w-full"></div>
-                                        <p 
-                                            className="text-sm font-bold border-t border-gray-800 pt-1 px-2"
-                                            style={{ color: data.themeColor }}
-                                        >
-                                            பொதுச் செயலாளர்
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
                         </div>
+                    </div>
+
+                    {/* Row 2: Signatures (Left and Right) */}
+                    <div className="flex justify-between items-end relative z-10 mt-6">
+                         
+                         {/* Left Signature */}
+                         <div className="flex flex-col items-center min-w-[150px]">
+                            {data.secondarySignatureImage ? (
+                                <img 
+                                    src={data.secondarySignatureImage} 
+                                    className="w-48 h-auto object-contain" 
+                                    alt="Authorized Seal Left" 
+                                />
+                            ) : (
+                                /* Placeholder if empty, or can remain blank if not needed */
+                                <div className="h-10"></div>
+                            )}
+                         </div>
+
+                         {/* Right Signature */}
+                         <div className="flex flex-col items-center min-w-[150px]">
+                            {data.signatureImage ? (
+                                <img 
+                                    src={data.signatureImage} 
+                                    className="w-48 h-auto object-contain" 
+                                    alt="Authorized Seal Right" 
+                                />
+                            ) : (
+                                // Fallback
+                                <div className="flex flex-col items-center">
+                                    <div className="h-10 w-full"></div>
+                                    <p 
+                                        className="text-sm font-bold border-t border-gray-800 pt-1 px-2"
+                                        style={{ color: data.themeColor }}
+                                    >
+                                        பொதுச் செயலாளர்
+                                    </p>
+                                </div>
+                            )}
+                         </div>
                     </div>
                 </div>
             </div>
