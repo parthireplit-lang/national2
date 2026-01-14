@@ -66,7 +66,7 @@ const PrintSheet: React.FC<PrintSheetProps> = ({ data }) => {
                 {/* Main Text */}
                 <div className="mb-6 relative z-10">
                     <p className="text-lg text-justify leading-8 font-medium indent-12">
-                        {data.orgName}யின் <span className="font-bold">{data.district}</span> மாவட்டம், <span className="font-bold">{data.role}</span> பொறுப்பில், <span className="font-bold">{data.firstName}</span> அவர்களை <span className="font-bold">{new Date(data.issueDate).toLocaleDateString('en-GB')}</span> முதல் நியமனம் செய்யப்படுகிறது.
+                        {data.orgName}யின் <span className="font-bold">{data.district}</span> மாவட்டம், <span className="font-bold">{data.role}</span> , <span className="font-bold">{data.firstName}</span> அவர்களை <span className="font-bold">{new Date(data.issueDate).toLocaleDateString('en-GB')}</span> முதல் நியமனம் செய்யப்படுகிறது.
                     </p>
                     <p className="text-lg text-justify leading-8 font-medium indent-12 mt-4">
                         தங்களது பணி சிறக்க மனதார வாழ்த்துகின்றேன்.
